@@ -221,8 +221,23 @@ Represents a price level available for bidding
 
 + Request (application/json)
     + Attributes (object)
-        + `location`(GeoPoint)- Rider/Driver's location
+        + `geoloc`(GeoPoint)- Rider/Driver's location
         
 + Response 200 (application/json)
     + Attributes (object)
         + isAvailable: True/false
+        
+
+## HeartBeat [/HeartBeat]
+
+### Exchange Heart-Beat with Engine [POST]
+* Api will receive the heart beat time and answers with a time 
+
++ Request (application/json)
+    + Attributes (object)
+        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+
+        
++ Response 200 (application/json)
+    + Attributes (object)
+        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
