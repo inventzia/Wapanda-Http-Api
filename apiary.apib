@@ -44,6 +44,60 @@ calculations. This document details the API for the pricing engine's HTTP interf
     Returned if in the array of drivers a car type unknown to the server is found
     + Body
     
+    
+
+## PooledPrice [/PooledPrice]
+
+### Compute price splits of pooled rides  [POST]
+* The pricing engine is provided with a list of riders details. Each rider detail is 
+* contained in an object called PoolingDetails. The pricing engine responds with a list
+* of prices applicable
+* Pricing engine provides the index of ongoing rates for all car types.
+
++ Request (application/json)
+    + Attributes (object)
+        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+        + `carDetails`: (CarDetails, required) - details of cartype
+        + `ridersDetails` (array[RiderDetails], required) - details of riders on the pooled ride
+        + `originalPrice`: (array[RidePriceLight], required) - array of original prices per rider before pooling
+
+        
++ Response 200 (application/json)
+    + Attributes (object)
+        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+        + `discountedPrices`: (array[DiscountedPrice], required) - array of discounted prices per each rider after pooling
+        
+
+    
+## ServiceAvalability [/ServiceAvalability]
+
+### Check for the service avalability in particular area [POST]
+* Api will check if wapanda is available in the area or not
+
++ Request (application/json)
+    + Attributes (object)
+        + `geoloc`(GeoPoint)- Rider/Driver's location
+        
++ Response 200 (application/json)
+    + Attributes (object)
+        + isAvailable: True/false
+        
+
+## HeartBeat [/HeartBeat]
+
+### Exchange Heart-Beat with Engine [POST]
+* Api will receive the heart beat time and answers with a time 
+
++ Request (application/json)
+    + Attributes (object)
+        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+        
+        
++ Response 200 (application/json)
+    + Attributes (object)
+        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+        
+
 ## Finalize [/finalize]
 nted 
 ### Save trip and adjust price [POST]
@@ -175,6 +229,8 @@ Driver's own estimated price according to his ratio to the index, and fair price
 + `levels_Schedule` (array[BidLevel], required) - Bid levels for the scheduling bid levels screen.
 + `restriction`: false (boolean, required) - Tells if the car has any restrictions in place
 + `restriction_message` : `No restrictions` (string, required) - The reason for the restriction if present 
++ `extras`   (Extras, required) - object containing all surcharges, tolls and fees
+
 
 
 ## TripInfo (object)
@@ -215,30 +271,58 @@ Represents a price level available for bidding
 + `levelPrice`: 34.25 (number, required) - Price level.
 + `indicator`: Low (BidIndicator, required) - low / high indicator
 
-## ServiceAvalability [/ServiceAvalability]
 
-### Check for the service avalability in particular area [POST]
-* Api will check if wapanda is available in the area or not
+## RiderDetails (object)
+Rider details
+###Properties
++ `riderId`: `adff99hdufhwe` (string, required) - Rider ID
++ `people`: 1 (number, required) - number of people on the same booking
++ `smallbags`: 1 (number, required) - number of small bags on the same booking
++ `largebags`: 1 (number, required) - number of large bags on the same booking
++ `milesoriginal`: 5.0 (number, required) - miles for the original ride without pooling
++ `minutesoriginal`: 5.0 (number, required) - minutes for the original ride without pooling
++ `diverted`: false (boolean, required) - was the ride diverted because of pooling
++ `milesdiversion`: 5.0 (number, required) - miles diversion because of pooling
++ `minutesdiversion`: 5.0 (number, required) - minutes diversion because of pooling
 
-+ Request (application/json)
-    + Attributes (object)
-        + `geoloc`(GeoPoint)- Rider/Driver's location
-        
-+ Response 200 (application/json)
-    + Attributes (object)
-        + isAvailable: True/false
-        
 
-## HeartBeat [/HeartBeat]
+## RidePriceLight (object)
+Driver's own estimated price according to his ratio to the index, and fair price for a car type on a planned route
+### Properties
++ `driverRatio` (DriverRatio, required) - The driver's specific ratio and car type
++ `estPrice`: 25.75 (number, required) - Ride price according to driver's rate. The amount that will be charged.
++ `moneyview`: (MoneyRepresentation, required)
++ `fairValues`: (FairPrice, required) - The fields defining fair and typical prices for the ride
++ `extras`   (Extras, required) - object containing all surcharges, tolls and fees    
+    
+    
+## CarDetails (object)
+Details of the car for pooling
+### Properties
++  `cartype`: `Standard` (CarType, required) - Driver's car.
++ `passengersCapacity`: 3.0 (number, required) - max number of passengers on ride
++ `largeSuitcasesCapacity`: 2.0 (number, required) - max number of large suitcases on ride
++ `handluggageCapacity`: 2.0 (number, required) - max number of hand luggage on ride
 
-### Exchange Heart-Beat with Engine [POST]
-* Api will receive the heart beat time and answers with a time 
 
-+ Request (application/json)
-    + Attributes (object)
-        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+## DiscountedPrice (object)
+Discounted price for a car type on a planned route
+### Properties
++ `price` (RidePriceLight, required) - discounted price
++ `originalPrice` (RidePriceLight, required) - original price
++ `saving` (number, required) - amount saved by pooling
 
-        
-+ Response 200 (application/json)
-    + Attributes (object)
-        + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
+
+## Extras (object)
+Object containing all surcharges, tolls and fees
+### Properties
++ `tolls`: 20.0 (number, required) - sum of all tolls
++ `processingfee`: 2.5 (number, required) - sum of all processing fees
++ `surcharges`: 2.5 (array[Charges], required) - list of special charges
+
+
+## Charges (object)
+Special charges
+### Properties
++ `amount`: 2.0 (number, required) - amount of surcharge
++ `reason`: "NYC eHail Congestion Charge" (string, required) - reason for charge
