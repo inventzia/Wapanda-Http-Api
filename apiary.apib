@@ -83,6 +83,22 @@ calculations. This document details the API for the pricing engine's HTTP interf
         + isAvailable: True/false
         
 
+    
+## CheapnessScreen [/CheapnessScreen]
+
+### Display the cheapness ranking of the cars at a given location [POST]
+* The Api allows one to receive the array of CheapnessRanks that applies to the area.
+
++ Request (application/json)
+    + Attributes (object)
+        + `geoloc`(GeoPoint)- Rider/Driver's location
+        
++ Response 200 (application/json)
+    + Attributes (object)
+        + `cheapnessArray` (array[CheapnessRank], required) - List of cheapness ranks
+        
+        
+
 ## HeartBeat [/HeartBeat]
 
 ### Exchange Heart-Beat with Engine [POST]
@@ -326,3 +342,10 @@ Special charges
 ### Properties
 + `amount`: 2.0 (number, required) - amount of surcharge
 + `reason`: "NYC eHail Congestion Charge" (string, required) - reason for charge
+
+## CheapnessRank (object)
+Info regarding the cheapness of a car type. 
+### Properties
++ `rank`: 1 (number, required) - ranking number in terms of cheapness, from 1 to N
++ `cartype`: `Taxi` (CarType, required) - Car Type for this CheapnessRank entry.
++ `description`: "Taxi is cheapest right now" (string, required) - description
