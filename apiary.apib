@@ -67,7 +67,7 @@ calculations. This document details the API for the pricing engine's HTTP interf
     + Attributes (object)
         + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
         + `discountedPrices`: (array[DiscountedPrice], required) - array of discounted prices per each rider after pooling
-        
+        + `extraEarningSummary: (ExtraEarning, required) - summary of the benefit to the driver due to pooling        
 
     
 ## ServiceAvalability [/ServiceAvalability]
@@ -332,9 +332,17 @@ Details of the car for pooling
 ## DiscountedPrice (object)
 Discounted price for a car type on a planned route
 ### Properties
++ `riderId`: `adff99hdufhwe` (string, required) - Rider ID
 + `price` (RidePriceLight, required) - discounted price
 + `originalPrice` (RidePriceLight, required) - original price
 + `saving` (number, required) - amount saved by pooling
+
+## ExtraEarning (object)
+Extra earning representation for the driver compared to 
+### Properties
++ `priceOfRide`: 15 (number, required) - price of the time and distance driven
++ `priceEarned`: 18 (number, required) - price earned because of pooling
++ `extraEarnings`: 3 (number, required) - extra earned over normal tarifs because of pooling
 
 
 ## Extras (object)
