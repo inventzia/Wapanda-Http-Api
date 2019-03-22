@@ -60,7 +60,8 @@ calculations. This document details the API for the pricing engine's HTTP interf
         + `carDetails`: (CarDetails, required) - details of cartype
         + `ridersDetails` (array[RiderDetails], required) - details of riders on the pooled ride
         + `originalPrice`: (array[RidePriceLight], required) - array of original prices per rider before pooling
-
+        + `totalmiles`: 10 (number, required) - total miles driven for the pooled ride
+        + `totaltime`: 600 (number, required) - total seconds driven for the pooled ride
         
 + Response 200 (application/json)
     + Attributes (object)
@@ -297,15 +298,20 @@ Rider details
 + `largebags`: 1 (number, required) - number of large bags on the same booking
 + `milesoriginal`: 5.0 (number, required) - miles for the original ride without pooling
 + `minutesoriginal`: 5.0 (number, required) - minutes for the original ride without pooling
-+ `diverted`: false (boolean, required) - was the ride diverted because of pooling
-+ `milesdiversion`: 5.0 (number, required) - miles diversion because of pooling
-+ `minutesdiversion`: 5.0 (number, required) - minutes diversion because of pooling
-+ `milesbeforediversion`: 5.0 (number, required) - miles traveled before the diversion started
++ `requiredDiversion`: false (boolean, required) - was the ride diverted to pick up/drop off this user
++ `milesrequireddiversion`: 5.0 (number, required) - miles that were driven for diversion to pick up/drop off this user
++ `minutesrequireddiversion`: 5.0 (number, required) - minutes that were driven, or waited, to pick up/drop off this user
++ `diverted`: false (boolean, required) - was the ride diverted to pick up/drop off another user
++ `totalmilesdiversion`: 5.0 (number, required) - total extra miles the car did with this user as passenger to pick up or drop off other users
++ `totalminutesdiversion`: 5.0 (number, required) - total extra minutes the car with this user as passenger to pick up or drop off other users
++ `milesbeforediversion`: 5.0 (number, required) - miles traveled before a diversion started
 + `minutesbeforediversion`: 5.0 (number, required) - minutes traveled before the diversion started
++ `orderPickUp`: 1 (number, required) - the order of the riders pick up sequence
++ `orderDropOff`: 2 (number, required) - the order of the rider drop off sequence
 
 
 ## RidePriceLight (object)
-Driver's own estimated price according to his ratio to the index, and fair price for a car type on a planned route
+Driver's own estimated price according to his ratio to the index, and fai price for a car type on a planned route
 ### Properties
 + `driverRatio` (DriverRatio, required) - The driver's specific ratio and car type
 + `estPrice`: 25.75 (number, required) - Ride price according to driver's rate. The amount that will be charged.
