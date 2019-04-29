@@ -57,17 +57,17 @@ calculations. This document details the API for the pricing engine's HTTP interf
 + Request (application/json)
     + Attributes (object)
         + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
-        + `carDetails`: (CarDetails, required) - details of cartype
+        + `carDetails` (CarDetails, required) - details of cartype
         + `ridersDetails` (array[RiderDetails], required) - details of riders on the pooled ride
-        + `originalPrice`: (array[RidePriceLight], required) - array of original prices per rider before pooling
+        + `originalPrice` (array[RidePriceLight], required) - array of original prices per rider before pooling
         + `totaldistance`: 10000 (number, required) - total meters driven for the pooled ride
         + `totaltime`: 600 (number, required) - total seconds driven for the pooled ride
         
 + Response 200 (application/json)
     + Attributes (object)
         + `time`: `2017-09-11T08:35:04.586Z` - Current time in ISO8601 format
-        + `discountedPrices`: (array[DiscountedPrice], required) - array of discounted prices per each rider after pooling
-        + `extraEarningSummary: (ExtraEarning, required) - summary of the benefit to the driver due to pooling        
+        + `discountedPrices` (array[DiscountedPrice], required) - array of discounted prices per each rider after pooling
+        + `extraEarningSummary (ExtraEarning, required) - summary of the benefit to the driver due to pooling        
 
     
 ## ServiceAvalability [/ServiceAvalability]
@@ -82,8 +82,22 @@ calculations. This document details the API for the pricing engine's HTTP interf
 + Response 200 (application/json)
     + Attributes (object)
         + isAvailable: True/false
-        
 
+
+## NearbyPoolingLocations [/NearbyPoolingLocations]
+
+### Check for the pooling end locations [POST]
+* Api will return nearby pooling end destinations within 50 miles
+
++ Request (application/json)
+    + Attributes (object)
+        + `geoloc`(GeoPoint)- Rider's location
+        
++ Response 200 (application/json)
+    + Attributes (object)
+        +  `poolingLocations` (array[PoolingLocation], required) - array of end destinations where pooling is allowed
+
+        
     
 ## CheapnessScreen [/CheapnessScreen]
 
@@ -315,8 +329,8 @@ Driver's own estimated price according to his ratio to the index, and fai price 
 ### Properties
 + `driverRatio` (DriverRatio, required) - The driver's specific ratio and car type
 + `estPrice`: 25.75 (number, required) - Ride price according to driver's rate. The amount that will be charged.
-+ `moneyview`: (MoneyRepresentation, required)
-+ `fairValues`: (FairPrice, required) - The fields defining fair and typical prices for the ride
++ `moneyview` (MoneyRepresentation, required)
++ `fairValues` (FairPrice, required) - The fields defining fair and typical prices for the ride
 + `extras`   (Extras, required) - object containing all surcharges, tolls and fees    
 + `riderId`: `adff99hdufhwe` (string, required) - Rider ID to whom the price was sent to (nneded for pooling)   
     
@@ -365,3 +379,9 @@ Info regarding the cheapness of a car type.
 + `rank`: 1 (number, required) - ranking number in terms of cheapness, from 1 to N
 + `cartype`: `Taxi` (CarType, required) - Car Type for this CheapnessRank entry.
 + `description`: "Taxi is cheapest right now" (string, required) - description
+
+
+## PoolingLocation (object)
+Coordinate and Name of the loacation
++ `geoloc` (GeoPoint, required) 
++ `description`: 'JFK airport' (string, required) - description
